@@ -1,0 +1,23 @@
+pring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+    initialization-mode: always
+  h2:
+    console:
+      enabled: true
+
+vipps:
+  mobilepay:
+    api:
+      url: https://api.vippsmobilepay.com
+    client:
+      id: your-client-id
+      secret: your-client-secret
+    merchant:
+      serial: your-merchant-serial
+
+server:
+  port: 8080

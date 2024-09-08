@@ -1,10 +1,10 @@
 package com.example.vippsapp.controllers;
 
+import com.example.vippsapp.dto.*;
 import com.example.vippsapp.services.MobilePayService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/payments")
@@ -18,9 +18,30 @@ public class PaymentController {
         this.mobilePayService = mobilePayService;
     }
 
-    public ResponseEntity<String> createPayment(@RequestParam String orderId,
-                                                @RequestParam    double amount){
-        String paymentResponse = mobilePayService.createPayment(orderId, amount);
-        return ResponseEntity.ok(paymentResponse);
+    @PostMapping("/create")
+    public ResponseEntity<PaymentResponse> createPayment(@RequestBody PaymentRequest request){
+        PaymentResponse paymentResponse = mobilePayService.createPayment(request);
+        if(paymentResponse != null) {
+            return ResponseEntity.ok(paymentResponse);
+        }
+        return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<PaymentStatusResponse> getStatusPayment(@PathVariable("order") String order) {
+        PaymentStatusResponse status = mobilePayService.getPaymentStatus(order);
+        if(status != null) {
+            return ResponseEntity.ok(status);
+        }
+        return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/cancel")
+    public ResponseEntity<PaymentCancelResponse> cancelPayment(@PathVariable("order") String order, @RequestBody PaymentCancelRequest request) {
+        PaymentCancelResponse response = mobilePayService.cancelPayment(order,request);
+        if(response != null) {
+            return ResponseEntity.ok(response);
+        }
+        return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
     }
 }
